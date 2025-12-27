@@ -296,19 +296,20 @@ export async function generateTimesheetImage(formData) {
   // ===== CLIENT AUTHORISATION SECTION =====
   y += 100
 
-  // Section header
+  // Section header with underline
   ctx.font = 'bold 40px Arial'
   ctx.textAlign = 'center'
   ctx.fillText('CLIENT AUTHORISATION FOR EXTRA TIME', width / 2, y)
-  ctx.textAlign = 'left'
 
-  // Draw line above only (removed strikethrough line below)
+  // Draw underline below the title
   ctx.strokeStyle = '#000000'
   ctx.lineWidth = 3
   ctx.beginPath()
-  ctx.moveTo(leftMargin, y - 10)
-  ctx.lineTo(leftMargin + boxWidth, y - 10)
+  ctx.moveTo(leftMargin, y + 15)
+  ctx.lineTo(leftMargin + boxWidth, y + 15)
   ctx.stroke()
+
+  ctx.textAlign = 'left'
 
   y += 50
   ctx.font = '28px Arial'
