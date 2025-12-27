@@ -20,18 +20,19 @@ function App() {
     yourName: '',
     role: 'Support Worker',
     shifts: {
-      monday: { start: '', end: '', sleep: '', breaks: '' },
-      tuesday: { start: '', end: '', sleep: '', breaks: '' },
-      wednesday: { start: '', end: '', sleep: '', breaks: '' },
-      thursday: { start: '', end: '', sleep: '', breaks: '' },
-      friday: { start: '', end: '', sleep: '', breaks: '' },
-      saturday: { start: '', end: '', sleep: '', breaks: '' },
-      sunday: { start: '', end: '', sleep: '', breaks: '' }
+      monday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+      tuesday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+      wednesday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+      thursday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+      friday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+      saturday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+      sunday: { start: '', end: '', sleep: '', breaks: '', notes: '' }
     }
   })
 
   const [message, setMessage] = useState({ type: '', text: '' })
   const [isGenerating, setIsGenerating] = useState(false)
+  const [expandedDays, setExpandedDays] = useState({}) // Track which days are expanded
 
   // Load saved data from browser storage when app starts
   useEffect(() => {
@@ -225,18 +226,26 @@ function App() {
       setFormData(prev => ({
         ...prev,
         shifts: {
-          monday: { start: '', end: '', sleep: '', breaks: '' },
-          tuesday: { start: '', end: '', sleep: '', breaks: '' },
-          wednesday: { start: '', end: '', sleep: '', breaks: '' },
-          thursday: { start: '', end: '', sleep: '', breaks: '' },
-          friday: { start: '', end: '', sleep: '', breaks: '' },
-          saturday: { start: '', end: '', sleep: '', breaks: '' },
-          sunday: { start: '', end: '', sleep: '', breaks: '' }
+          monday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+          tuesday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+          wednesday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+          thursday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+          friday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+          saturday: { start: '', end: '', sleep: '', breaks: '', notes: '' },
+          sunday: { start: '', end: '', sleep: '', breaks: '', notes: '' }
         }
       }))
       setMessage({ type: 'success', text: 'All shifts cleared!' })
       setTimeout(() => setMessage({ type: '', text: '' }), 3000)
     }
+  }
+
+  // Toggle day expansion (for collapsible days)
+  const toggleDay = (day) => {
+    setExpandedDays(prev => ({
+      ...prev,
+      [day]: !prev[day]
+    }))
   }
 
   const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
@@ -331,82 +340,219 @@ function App() {
         </div>
       </section>
 
-      {/* Shift Times Section */}
-      <section className="form-section">
+      {/* Shift Times Section - Collapsible */}
+      <section className="form-section" style={{ marginBottom: '2rem' }}>
         <h2 className="section-title">🕐 Weekly Shifts</h2>
 
-        <div className="shift-grid">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           {days.map(day => {
             const shift = formData.shifts[day]
             const hours = calculateHours(shift.start, shift.end, shift.sleep, shift.breaks)
+            const isExpanded = expandedDays[day]
+            const hasData = shift.start || shift.end || shift.sleep || shift.breaks || shift.notes
 
             return (
-              <div key={day} className="day-row">
-                <div className="day-header">{dayLabels[day]}</div>
-
-                <div className="time-inputs">
-                  <div className="time-group">
-                    <label className="time-label">Start Time</label>
-                    <input
-                      type="time"
-                      className="time-input"
-                      value={shift.start}
-                      onChange={(e) => handleShiftChange(day, 'start', e.target.value)}
-                    />
+              <div key={day} style={{
+                border: '1px solid #e5e7eb',
+                borderRadius: '0.5rem',
+                overflow: 'hidden',
+                background: hasData ? '#f0fdf4' : '#f9fafb'
+              }}>
+                {/* Day Header - Clickable */}
+                <button
+                  onClick={() => toggleDay(day)}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    background: 'transparent',
+                    border: 'none',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    cursor: 'pointer',
+                    textAlign: 'left'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <span style={{
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      color: '#667eea',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em'
+                    }}>
+                      {dayLabels[day]}
+                    </span>
+                    {hasData && (
+                      <span style={{
+                        fontSize: '0.75rem',
+                        background: '#667eea',
+                        color: 'white',
+                        padding: '0.125rem 0.5rem',
+                        borderRadius: '0.25rem',
+                        fontWeight: '600'
+                      }}>
+                        {hours}h
+                      </span>
+                    )}
                   </div>
+                  <span style={{
+                    fontSize: '1.25rem',
+                    transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.2s'
+                  }}>
+                    ▼
+                  </span>
+                </button>
 
-                  <div className="time-group">
-                    <label className="time-label">End Time</label>
-                    <input
-                      type="time"
-                      className="time-input"
-                      value={shift.end}
-                      onChange={(e) => handleShiftChange(day, 'end', e.target.value)}
-                    />
-                  </div>
-                </div>
+                {/* Expandable Content */}
+                {isExpanded && (
+                  <div style={{
+                    padding: '1rem',
+                    borderTop: '1px solid #e5e7eb',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.75rem'
+                  }}>
+                    {/* Start and End Time */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                      <div>
+                        <label style={{
+                          display: 'block',
+                          fontSize: '0.75rem',
+                          color: '#6b7280',
+                          marginBottom: '0.25rem'
+                        }}>
+                          Start Time
+                        </label>
+                        <input
+                          type="time"
+                          className="time-input"
+                          value={shift.start}
+                          onChange={(e) => handleShiftChange(day, 'start', e.target.value)}
+                          style={{ width: '100%' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{
+                          display: 'block',
+                          fontSize: '0.75rem',
+                          color: '#6b7280',
+                          marginBottom: '0.25rem'
+                        }}>
+                          End Time
+                        </label>
+                        <input
+                          type="time"
+                          className="time-input"
+                          value={shift.end}
+                          onChange={(e) => handleShiftChange(day, 'end', e.target.value)}
+                          style={{ width: '100%' }}
+                        />
+                      </div>
+                    </div>
 
-                <div className="extra-inputs">
-                  <div className="time-group">
-                    <label className="time-label">Sleep (hrs)</label>
-                    <input
-                      type="number"
-                      step="0.5"
-                      className="time-input"
-                      value={shift.sleep}
-                      onChange={(e) => handleShiftChange(day, 'sleep', e.target.value)}
-                      placeholder="0"
-                    />
-                  </div>
+                    {/* Sleep and Breaks */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                      <div>
+                        <label style={{
+                          display: 'block',
+                          fontSize: '0.75rem',
+                          color: '#6b7280',
+                          marginBottom: '0.25rem'
+                        }}>
+                          Sleep (hours)
+                        </label>
+                        <input
+                          type="number"
+                          step="0.5"
+                          className="time-input"
+                          value={shift.sleep}
+                          onChange={(e) => handleShiftChange(day, 'sleep', e.target.value)}
+                          placeholder="0"
+                          style={{ width: '100%' }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{
+                          display: 'block',
+                          fontSize: '0.75rem',
+                          color: '#6b7280',
+                          marginBottom: '0.25rem'
+                        }}>
+                          Break (minutes)
+                        </label>
+                        <input
+                          type="number"
+                          className="time-input"
+                          value={shift.breaks}
+                          onChange={(e) => handleShiftChange(day, 'breaks', e.target.value)}
+                          placeholder="0"
+                          style={{ width: '100%' }}
+                        />
+                      </div>
+                    </div>
 
-                  <div className="time-group">
-                    <label className="time-label">Break (min)</label>
-                    <input
-                      type="number"
-                      className="time-input"
-                      value={shift.breaks}
-                      onChange={(e) => handleShiftChange(day, 'breaks', e.target.value)}
-                      placeholder="0"
-                    />
-                  </div>
+                    {/* Notes Field */}
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.75rem',
+                        color: '#6b7280',
+                        marginBottom: '0.25rem'
+                      }}>
+                        Notes (optional)
+                      </label>
+                      <textarea
+                        className="time-input"
+                        value={shift.notes}
+                        onChange={(e) => handleShiftChange(day, 'notes', e.target.value)}
+                        placeholder="Add any notes for this day..."
+                        rows="2"
+                        style={{
+                          width: '100%',
+                          resize: 'vertical',
+                          fontFamily: 'inherit'
+                        }}
+                      />
+                    </div>
 
-                  <div className="hours-display">
-                    {hours}h
+                    {/* Calculated Hours Display */}
+                    {hasData && (
+                      <div style={{
+                        background: '#667eea',
+                        color: 'white',
+                        padding: '0.5rem',
+                        borderRadius: '0.375rem',
+                        textAlign: 'center',
+                        fontWeight: '600',
+                        fontSize: '0.875rem'
+                      }}>
+                        Total: {hours} hours
+                      </div>
+                    )}
                   </div>
-                </div>
+                )}
               </div>
             )
           })}
         </div>
 
+        {/* Weekly Total */}
         <div style={{
-          marginTop: '1rem',
-          textAlign: 'right',
-          fontSize: '1.25rem',
-          fontWeight: 'bold',
-          color: '#667eea'
+          marginTop: '1.5rem',
+          padding: '1rem',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          borderRadius: '0.5rem',
+          textAlign: 'center',
+          color: 'white'
         }}>
-          Total: {calculateTotalHours()} hours
+          <div style={{ fontSize: '0.875rem', opacity: 0.9, marginBottom: '0.25rem' }}>
+            Weekly Total
+          </div>
+          <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+            {calculateTotalHours()} hours
+          </div>
         </div>
       </section>
 
