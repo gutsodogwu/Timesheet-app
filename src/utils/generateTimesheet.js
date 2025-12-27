@@ -27,12 +27,12 @@ export async function generateTimesheetImage(formData) {
   let y = 200
 
   ctx.fillStyle = '#000000'
-  ctx.font = 'bold 50px Arial'
+  ctx.font = 'bold 90px Arial'
   ctx.textAlign = 'center'
   ctx.fillText('pinpoint', width / 2, y)
 
-  ctx.font = '40px Arial'
-  y += 50
+  ctx.font = '70px Arial'
+  y += 70
   ctx.fillText('health&socialcare', width / 2, y)
 
   // Reset text alignment
@@ -46,21 +46,21 @@ export async function generateTimesheetImage(formData) {
   // COMPANY NAME box
   drawBox(ctx, leftMargin, y, boxWidth, 70)
   ctx.fillStyle = '#000000'
-  ctx.font = 'bold 32px Arial'
-  ctx.fillText('COMPANY NAME:', leftMargin + 20, y + 45)
+  ctx.font = 'bold 48px Arial'
+  ctx.fillText('COMPANY NAME:', leftMargin + 20, y + 50)
 
   // Fill in company name
-  ctx.font = '32px Arial'
-  ctx.fillText(formData.companyName || '', leftMargin + 400, y + 45)
+  ctx.font = 'bold 44px Arial'
+  ctx.fillText(formData.companyName || '', leftMargin + 480, y + 50)
 
   // ADDRESS box
   y += 70
   drawBox(ctx, leftMargin, y, boxWidth, 70)
-  ctx.font = 'bold 32px Arial'
-  ctx.fillText('ADDRESS:', leftMargin + 20, y + 45)
+  ctx.font = 'bold 48px Arial'
+  ctx.fillText('ADDRESS:', leftMargin + 20, y + 50)
 
-  ctx.font = '32px Arial'
-  ctx.fillText(formData.clientAddress || '', leftMargin + 400, y + 45)
+  ctx.font = 'bold 44px Arial'
+  ctx.fillText(formData.clientAddress || '', leftMargin + 300, y + 50)
 
   // WEEK ENDING DATE box (split into two columns)
   y += 70
@@ -68,28 +68,28 @@ export async function generateTimesheetImage(formData) {
   drawBox(ctx, leftMargin, y, boxWidth / 2, 70)
   drawBox(ctx, splitX, y, boxWidth / 2, 70)
 
-  ctx.font = 'bold 32px Arial'
-  ctx.fillText('WEEK ENDING DATE (Sunday)', leftMargin + 20, y + 45)
+  ctx.font = 'bold 48px Arial'
+  ctx.fillText('WEEK ENDING DATE (Sunday)', leftMargin + 20, y + 50)
 
-  ctx.font = '32px Arial'
-  ctx.fillText(formatDate(formData.weekEnding), splitX + 20, y + 45)
+  ctx.font = 'bold 44px Arial'
+  ctx.fillText(formatDate(formData.weekEnding), splitX + 100, y + 50)
 
   // YOUR NAME field
   y += 100
-  ctx.font = '30px Arial'
+  ctx.font = 'bold 42px Arial'
   ctx.fillText('Your Name:', leftMargin + 20, y)
 
   // Draw line under name
   ctx.strokeStyle = '#000000'
-  ctx.lineWidth = 2
+  ctx.lineWidth = 3
   ctx.beginPath()
-  ctx.moveTo(leftMargin + 280, y)
-  ctx.lineTo(leftMargin + 1200, y)
+  ctx.moveTo(leftMargin + 320, y)
+  ctx.lineTo(leftMargin + 1400, y)
   ctx.stroke()
 
   // Fill in name
-  ctx.font = '32px Arial'
-  ctx.fillText(formData.yourName || '', leftMargin + 290, y - 5)
+  ctx.font = 'bold 46px Arial'
+  ctx.fillText(formData.yourName || '', leftMargin + 330, y - 8)
 
   // ===== MAIN TIMESHEET TABLE =====
   y += 80
@@ -105,9 +105,9 @@ export async function generateTimesheetImage(formData) {
     drawBox(ctx, x, y, colWidth, rowHeight)
 
     if (days[i]) {
-      ctx.font = 'bold 28px Arial'
+      ctx.font = 'bold 42px Arial'
       ctx.textAlign = 'center'
-      ctx.fillText(days[i], x + colWidth / 2, y + 60)
+      ctx.fillText(days[i], x + colWidth / 2, y + 65)
       ctx.textAlign = 'left'
     }
   }
@@ -125,8 +125,8 @@ export async function generateTimesheetImage(formData) {
 
   // Shift Pattern row
   drawBox(ctx, leftMargin, y, colWidth, rowHeight)
-  ctx.font = '22px Arial'
-  drawMultilineText(ctx, rowLabels[0], leftMargin + 10, y + 30, 24)
+  ctx.font = 'bold 32px Arial'
+  drawMultilineText(ctx, rowLabels[0], leftMargin + 10, y + 25, 28)
 
   // Fill shift times for each day
   const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
@@ -136,10 +136,10 @@ export async function generateTimesheetImage(formData) {
 
     const shift = formData.shifts[dayKeys[i]]
     if (shift.start || shift.end) {
-      ctx.font = '28px Arial'
+      ctx.font = 'bold 40px Arial'
       ctx.textAlign = 'center'
       const timeText = `${shift.start || ''} - ${shift.end || ''}`
-      ctx.fillText(timeText, x + colWidth / 2, y + 60)
+      ctx.fillText(timeText, x + colWidth / 2, y + 65)
       ctx.textAlign = 'left'
     }
   }
@@ -149,8 +149,8 @@ export async function generateTimesheetImage(formData) {
   // Row 2: Sleep
   y += rowHeight
   drawBox(ctx, leftMargin, y, colWidth, rowHeight)
-  ctx.font = 'bold 26px Arial'
-  ctx.fillText('Sleep', leftMargin + 10, y + 60)
+  ctx.font = 'bold 38px Arial'
+  ctx.fillText('Sleep', leftMargin + 10, y + 65)
 
   for (let i = 0; i < 7; i++) {
     const x = leftMargin + ((i + 1) * colWidth)
@@ -158,9 +158,9 @@ export async function generateTimesheetImage(formData) {
 
     const shift = formData.shifts[dayKeys[i]]
     if (shift.sleep) {
-      ctx.font = '28px Arial'
+      ctx.font = 'bold 40px Arial'
       ctx.textAlign = 'center'
-      ctx.fillText(shift.sleep, x + colWidth / 2, y + 60)
+      ctx.fillText(shift.sleep, x + colWidth / 2, y + 65)
       ctx.textAlign = 'left'
     }
   }
@@ -176,8 +176,8 @@ export async function generateTimesheetImage(formData) {
   // Row 4: Breaks Taken
   y += rowHeight
   drawBox(ctx, leftMargin, y, colWidth, rowHeight)
-  ctx.font = 'bold 26px Arial'
-  ctx.fillText('Breaks Taken', leftMargin + 10, y + 60)
+  ctx.font = 'bold 38px Arial'
+  ctx.fillText('Breaks Taken', leftMargin + 10, y + 65)
 
   for (let i = 0; i < 7; i++) {
     const x = leftMargin + ((i + 1) * colWidth)
@@ -185,9 +185,9 @@ export async function generateTimesheetImage(formData) {
 
     const shift = formData.shifts[dayKeys[i]]
     if (shift.breaks) {
-      ctx.font = '28px Arial'
+      ctx.font = 'bold 40px Arial'
       ctx.textAlign = 'center'
-      ctx.fillText(shift.breaks, x + colWidth / 2, y + 60)
+      ctx.fillText(shift.breaks, x + colWidth / 2, y + 65)
       ctx.textAlign = 'left'
     }
   }
@@ -203,8 +203,8 @@ export async function generateTimesheetImage(formData) {
   // Row 6: Hours
   y += rowHeight
   drawBox(ctx, leftMargin, y, colWidth, rowHeight)
-  ctx.font = 'bold 26px Arial'
-  ctx.fillText('Hours', leftMargin + 10, y + 60)
+  ctx.font = 'bold 38px Arial'
+  ctx.fillText('Hours', leftMargin + 10, y + 65)
 
   let totalWeekHours = 0
   for (let i = 0; i < 7; i++) {
@@ -216,25 +216,25 @@ export async function generateTimesheetImage(formData) {
 
     if (hours > 0) {
       totalWeekHours += parseFloat(hours)
-      ctx.font = 'bold 28px Arial'
+      ctx.font = 'bold 48px Arial'
       ctx.textAlign = 'center'
-      ctx.fillText(hours.toString(), x + colWidth / 2, y + 60)
+      ctx.fillText(hours.toString(), x + colWidth / 2, y + 65)
       ctx.textAlign = 'left'
     }
   }
 
   // Total hours
   drawBox(ctx, leftMargin + (8 * colWidth), y, colWidth, rowHeight)
-  ctx.font = 'bold 32px Arial'
+  ctx.font = 'bold 52px Arial'
   ctx.textAlign = 'center'
-  ctx.fillText(totalWeekHours.toFixed(1), leftMargin + (8 * colWidth) + colWidth / 2, y + 60)
+  ctx.fillText(totalWeekHours.toFixed(1), leftMargin + (8 * colWidth) + colWidth / 2, y + 65)
   ctx.textAlign = 'left'
 
   // Row 7: Client Signature
   y += rowHeight
   drawBox(ctx, leftMargin, y, colWidth, rowHeight)
-  ctx.font = 'bold 24px Arial'
-  drawMultilineText(ctx, 'Client\nSignature:', leftMargin + 10, y + 35, 28)
+  ctx.font = 'bold 36px Arial'
+  drawMultilineText(ctx, 'Client\nSignature:', leftMargin + 10, y + 30, 32)
 
   for (let i = 1; i < 9; i++) {
     const x = leftMargin + (i * colWidth)
@@ -244,8 +244,8 @@ export async function generateTimesheetImage(formData) {
   // Row 8: Holiday Request
   y += rowHeight
   drawBox(ctx, leftMargin, y, colWidth, rowHeight)
-  ctx.font = 'bold 24px Arial'
-  drawMultilineText(ctx, 'Holiday\nRequest:', leftMargin + 10, y + 35, 28)
+  ctx.font = 'bold 36px Arial'
+  drawMultilineText(ctx, 'Holiday\nRequest:', leftMargin + 10, y + 30, 32)
 
   for (let i = 1; i < 9; i++) {
     const x = leftMargin + (i * colWidth)
@@ -254,11 +254,11 @@ export async function generateTimesheetImage(formData) {
 
   // ===== ROLE CHECKBOXES =====
   y += 120
-  ctx.font = '24px Arial'
+  ctx.font = '32px Arial'
   ctx.fillText('Please tick appropriate box', leftMargin, y)
 
   y += 40
-  const checkboxSize = 35
+  const checkboxSize = 45
   const checkboxSpacing = 450
 
   // First row of checkboxes
@@ -294,14 +294,14 @@ export async function generateTimesheetImage(formData) {
   y += 100
 
   // Section header
-  ctx.font = 'bold 28px Arial'
+  ctx.font = 'bold 40px Arial'
   ctx.textAlign = 'center'
   ctx.fillText('CLIENT AUTHORISATION FOR EXTRA TIME', width / 2, y)
   ctx.textAlign = 'left'
 
   // Draw line above and below
   ctx.strokeStyle = '#000000'
-  ctx.lineWidth = 2
+  ctx.lineWidth = 3
   ctx.beginPath()
   ctx.moveTo(leftMargin, y - 10)
   ctx.lineTo(leftMargin + boxWidth, y - 10)
@@ -312,8 +312,8 @@ export async function generateTimesheetImage(formData) {
   ctx.lineTo(leftMargin + boxWidth, y + 5)
   ctx.stroke()
 
-  y += 40
-  ctx.font = '22px Arial'
+  y += 50
+  ctx.font = '28px Arial'
   ctx.textAlign = 'center'
   ctx.fillText('*Reason for Additional Hours Owed / No Break Taken (To be completed and signed/dated by client)', width / 2, y)
   ctx.textAlign = 'left'
@@ -327,16 +327,17 @@ export async function generateTimesheetImage(formData) {
 
   // Headers
   drawBox(ctx, leftMargin, y, col1Width, 60)
-  ctx.font = 'bold 24px Arial'
+  ctx.font = 'bold 34px Arial'
   ctx.textAlign = 'center'
-  ctx.fillText('SHIFT', leftMargin + col1Width / 2, y + 40)
+  ctx.fillText('SHIFT', leftMargin + col1Width / 2, y + 35)
   ctx.fillText('DATE:', leftMargin + col1Width / 2, y + 60)
 
   drawBox(ctx, leftMargin + col1Width, y, col2Width, 60)
-  ctx.fillText('REASON:', leftMargin + col1Width + col2Width / 2, y + 40)
+  ctx.fillText('REASON:', leftMargin + col1Width + col2Width / 2, y + 45)
 
   drawBox(ctx, leftMargin + col1Width + col2Width, y, col3Width, 60)
-  drawMultilineText(ctx, 'CLIENT\nSIGNATURE:', leftMargin + col1Width + col2Width + 20, y + 25, 26)
+  ctx.textAlign = 'left'
+  drawMultilineText(ctx, 'CLIENT\nSIGNATURE:', leftMargin + col1Width + col2Width + 20, y + 20, 30)
 
   ctx.textAlign = 'left'
 
@@ -349,75 +350,75 @@ export async function generateTimesheetImage(formData) {
   // ===== FOOTER TEXT =====
   y += authTableHeight + 40
 
-  ctx.font = '20px Arial'
+  ctx.font = '24px Arial'
   const footerText = 'I hereby confirm that the hours detailed on this timesheet have been completed by the Temporary Worker, all breaks have been deducted and that I am satisfied with the standard of work carried out. If additional hours have been authorised (i.e. no break taken) then this will be disclosed in the box above and overrides our general break policy. By signing below I also agree to the Hourly Charge Rates and Terms and Conditions of Business.'
 
-  drawWrappedText(ctx, footerText, leftMargin, y, 2240, 24)
+  drawWrappedText(ctx, footerText, leftMargin, y, 2240, 30)
 
   // ===== SIGNATURE LINES =====
   y += 140
 
   // Signature line
   ctx.strokeStyle = '#000000'
-  ctx.lineWidth = 2
+  ctx.lineWidth = 3
   ctx.beginPath()
-  ctx.moveTo(leftMargin + 300, y)
-  ctx.lineTo(leftMargin + 1000, y)
+  ctx.moveTo(leftMargin + 350, y)
+  ctx.lineTo(leftMargin + 1050, y)
   ctx.stroke()
 
-  ctx.font = 'bold 26px Arial'
-  ctx.fillText('SIGNATURE:', leftMargin, y)
+  ctx.font = 'bold 38px Arial'
+  ctx.fillText('SIGNATURE:', leftMargin, y + 5)
 
   // Position line
   ctx.beginPath()
-  ctx.moveTo(leftMargin + 1400, y)
-  ctx.lineTo(leftMargin + 2000, y)
+  ctx.moveTo(leftMargin + 1500, y)
+  ctx.lineTo(leftMargin + 2100, y)
   ctx.stroke()
 
-  ctx.fillText('POSITION:', leftMargin + 1200, y)
+  ctx.fillText('POSITION:', leftMargin + 1250, y + 5)
 
-  y += 60
+  y += 70
 
   // Print name line
   ctx.beginPath()
-  ctx.moveTo(leftMargin + 300, y)
-  ctx.lineTo(leftMargin + 1000, y)
+  ctx.moveTo(leftMargin + 350, y)
+  ctx.lineTo(leftMargin + 1050, y)
   ctx.stroke()
 
-  ctx.fillText('PRINT NAME:', leftMargin, y)
+  ctx.fillText('PRINT NAME:', leftMargin, y + 5)
 
   // Date line
   ctx.beginPath()
-  ctx.moveTo(leftMargin + 1400, y)
-  ctx.lineTo(leftMargin + 2000, y)
+  ctx.moveTo(leftMargin + 1500, y)
+  ctx.lineTo(leftMargin + 2100, y)
   ctx.stroke()
 
-  ctx.fillText('DATE:', leftMargin + 1200, y)
+  ctx.fillText('DATE:', leftMargin + 1250, y + 5)
 
   // ===== BOTTOM WARNING TEXT =====
-  y += 60
+  y += 70
 
-  ctx.font = 'bold 22px Arial'
+  ctx.font = 'bold 28px Arial'
   ctx.textAlign = 'center'
   ctx.fillText('Any unauthorised timesheets will not be processed by payroll and you will not be paid for these', width / 2, y)
-  y += 30
+  y += 35
   ctx.fillText('hours until a client signature is provided, or email confirmation sought via consultant.', width / 2, y)
 
-  y += 40
-  ctx.font = 'bold 26px Arial'
+  y += 50
+  ctx.font = 'bold 32px Arial'
   ctx.fillText('TIMESHEET MUST BE RETURNED TO OUR OFFICE BEFORE MONDAY AT 9am', width / 2, y)
 
   // ===== CONTACT INFO =====
-  y += 50
-  ctx.font = 'bold 28px Arial'
+  y += 60
+  ctx.font = 'bold 36px Arial'
   ctx.fillText('E-mail: middlesbrough@pin-point.co.uk', width / 2, y)
 
-  y += 35
-  ctx.font = '22px Arial'
+  y += 45
+  ctx.font = '28px Arial'
   ctx.fillText('Pin Point Recruitment Ltd, Suite 1, Boho Six, Linthorpe Rd, Middlesbrough, TS1 1RE', width / 2, y)
 
-  y += 35
-  ctx.font = 'bold 26px Arial'
+  y += 45
+  ctx.font = 'bold 34px Arial'
   ctx.fillText('TEL: (01642) 772 134', width / 2, y)
 
   ctx.textAlign = 'left'
@@ -436,26 +437,26 @@ function drawBox(ctx, x, y, width, height) {
 function drawCheckbox(ctx, x, y, size, label, checked) {
   // Draw checkbox square
   ctx.strokeStyle = '#000000'
-  ctx.lineWidth = 2
+  ctx.lineWidth = 3
   ctx.strokeRect(x, y, size, size)
 
   // Draw checkmark if checked
   if (checked) {
     ctx.fillStyle = '#000000'
-    ctx.font = 'bold 30px Arial'
-    ctx.fillText('✓', x + 6, y + 28)
+    ctx.font = 'bold 40px Arial'
+    ctx.fillText('✓', x + 8, y + 36)
   }
 
   // Draw label
   ctx.fillStyle = '#000000'
-  ctx.font = '22px Arial'
+  ctx.font = '30px Arial'
 
   if (label.includes('\n')) {
     const lines = label.split('\n')
-    ctx.fillText(lines[0], x + size + 10, y + 18)
-    ctx.fillText(lines[1], x + size + 10, y + 38)
+    ctx.fillText(lines[0], x + size + 12, y + 22)
+    ctx.fillText(lines[1], x + size + 12, y + 46)
   } else {
-    ctx.fillText(label, x + size + 10, y + 25)
+    ctx.fillText(label, x + size + 12, y + 30)
   }
 }
 
