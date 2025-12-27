@@ -240,6 +240,31 @@ function App() {
     }
   }
 
+  // Edit a specific day - scroll to shift section and select that day
+  const handleEditDay = (day) => {
+    setSelectedDay(day)
+    // Scroll to the shift input section smoothly
+    const shiftSection = document.querySelector('.form-section')
+    if (shiftSection) {
+      shiftSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  // Delete a specific day's shift data
+  const handleDeleteDay = (day) => {
+    if (confirm(`Delete ${dayLabels[day]}'s shift?`)) {
+      setFormData(prev => ({
+        ...prev,
+        shifts: {
+          ...prev.shifts,
+          [day]: { start: '', end: '', sleep: '', breaks: '', notes: '' }
+        }
+      }))
+      setMessage({ type: 'success', text: `${dayLabels[day]} shift deleted!` })
+      setTimeout(() => setMessage({ type: '', text: '' }), 3000)
+    }
+  }
+
   const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
   const dayLabels = {
     monday: 'Monday',
@@ -452,15 +477,52 @@ function App() {
                     padding: '0.5rem 0.75rem',
                     background: day === selectedDay ? '#f0fdf4' : '#f9fafb',
                     borderRadius: '0.375rem',
-                    border: day === selectedDay ? '1px solid #667eea' : '1px solid #e5e7eb'
+                    border: day === selectedDay ? '1px solid #667eea' : '1px solid #e5e7eb',
+                    gap: '0.5rem'
                   }}
                 >
-                  <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
-                    {dayLabels[day]}
-                  </span>
-                  <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#667eea' }}>
-                    {hours}h {shift.start && shift.end && `(${shift.start} - ${shift.end})`}
-                  </span>
+                  <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                    <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>
+                      {dayLabels[day]}
+                    </span>
+                    <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#667eea' }}>
+                      {hours}h {shift.start && shift.end && `(${shift.start} - ${shift.end})`}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.25rem' }}>
+                    <button
+                      onClick={() => handleEditDay(day)}
+                      style={{
+                        padding: '0.375rem 0.625rem',
+                        background: '#667eea',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '0.25rem',
+                        cursor: 'pointer',
+                        fontSize: '0.75rem',
+                        fontWeight: '600'
+                      }}
+                      title="Edit"
+                    >
+                      ✏️
+                    </button>
+                    <button
+                      onClick={() => handleDeleteDay(day)}
+                      style={{
+                        padding: '0.375rem 0.625rem',
+                        background: '#ef4444',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '0.25rem',
+                        cursor: 'pointer',
+                        fontSize: '0.75rem',
+                        fontWeight: '600'
+                      }}
+                      title="Delete"
+                    >
+                      🗑️
+                    </button>
+                  </div>
                 </div>
               ) : null
             })}
