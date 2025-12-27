@@ -74,25 +74,28 @@ export async function generateTimesheetImage(formData) {
   ctx.font = 'bold 44px Arial'
   ctx.fillText(formatDate(formData.weekEnding), splitX + 100, y + 50)
 
-  // YOUR NAME field
-  y += 100
+  // YOUR NAME field - centered between WEEK ENDING box and table
+  const weekEndingBottom = y + 70 // bottom of WEEK ENDING DATE box
+  const gapSize = 120 // space before table starts
+  const nameY = weekEndingBottom + (gapSize / 2) + 10 // vertically centered in the gap
+
   ctx.font = 'bold 42px Arial'
-  ctx.fillText('Your Name:', leftMargin + 20, y)
+  ctx.fillText('Your Name:', leftMargin + 20, nameY)
 
   // Draw line under name
   ctx.strokeStyle = '#000000'
   ctx.lineWidth = 3
   ctx.beginPath()
-  ctx.moveTo(leftMargin + 320, y)
-  ctx.lineTo(leftMargin + 1400, y)
+  ctx.moveTo(leftMargin + 320, nameY)
+  ctx.lineTo(leftMargin + 1400, nameY)
   ctx.stroke()
 
   // Fill in name
   ctx.font = 'bold 46px Arial'
-  ctx.fillText(formData.yourName || '', leftMargin + 330, y - 8)
+  ctx.fillText(formData.yourName || '', leftMargin + 330, nameY - 8)
 
   // ===== MAIN TIMESHEET TABLE =====
-  y += 80
+  y = weekEndingBottom + gapSize
   const tableStartY = y
   const colWidth = 285
   const rowHeight = 100
@@ -299,17 +302,12 @@ export async function generateTimesheetImage(formData) {
   ctx.fillText('CLIENT AUTHORISATION FOR EXTRA TIME', width / 2, y)
   ctx.textAlign = 'left'
 
-  // Draw line above and below
+  // Draw line above only (removed strikethrough line below)
   ctx.strokeStyle = '#000000'
   ctx.lineWidth = 3
   ctx.beginPath()
   ctx.moveTo(leftMargin, y - 10)
   ctx.lineTo(leftMargin + boxWidth, y - 10)
-  ctx.stroke()
-
-  ctx.beginPath()
-  ctx.moveTo(leftMargin, y + 5)
-  ctx.lineTo(leftMargin + boxWidth, y + 5)
   ctx.stroke()
 
   y += 50
@@ -320,24 +318,24 @@ export async function generateTimesheetImage(formData) {
 
   // Table for authorization
   y += 30
-  const authTableHeight = 200
+  const authTableHeight = 280 // Increased from 200 for more space
   const col1Width = 400
   const col2Width = 900
   const col3Width = 940
 
-  // Headers
+  // Headers - all centered
   drawBox(ctx, leftMargin, y, col1Width, 60)
   ctx.font = 'bold 34px Arial'
   ctx.textAlign = 'center'
-  ctx.fillText('SHIFT', leftMargin + col1Width / 2, y + 35)
-  ctx.fillText('DATE:', leftMargin + col1Width / 2, y + 60)
+  ctx.fillText('SHIFT', leftMargin + col1Width / 2, y + 30)
+  ctx.fillText('DATE:', leftMargin + col1Width / 2, y + 55)
 
   drawBox(ctx, leftMargin + col1Width, y, col2Width, 60)
-  ctx.fillText('REASON:', leftMargin + col1Width + col2Width / 2, y + 45)
+  ctx.fillText('REASON:', leftMargin + col1Width + col2Width / 2, y + 42)
 
   drawBox(ctx, leftMargin + col1Width + col2Width, y, col3Width, 60)
-  ctx.textAlign = 'left'
-  drawMultilineText(ctx, 'CLIENT\nSIGNATURE:', leftMargin + col1Width + col2Width + 20, y + 20, 30)
+  ctx.fillText('CLIENT', leftMargin + col1Width + col2Width + col3Width / 2, y + 30)
+  ctx.fillText('SIGNATURE:', leftMargin + col1Width + col2Width + col3Width / 2, y + 55)
 
   ctx.textAlign = 'left'
 
